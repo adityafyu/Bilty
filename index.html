@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yashvardhan Logistics – Invoice Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="scanline"></div>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo-block">
+        <div class="logo-icon">YL</div>
+        <div>
+          <div class="brand">YASHVARDHAN LOGISTICS</div>
+          <div class="tagline">Goods Consignment Note Generator</div>
+        </div>
+      </div>
+      <div class="header-badge">GC NOTE</div>
+    </div>
+  </header>
+
+  <main>
+    <form id="invoiceForm" autocomplete="off">
+
+      <!-- Section 1: Shipment Info -->
+      <section class="card">
+        <div class="card-label">SHIPMENT DETAILS</div>
+        <div class="form-grid cols-3">
+          <div class="field">
+            <label for="dated">Date <span class="req">*</span></label>
+            <input type="date" id="dated" required />
+          </div>
+          <div class="field">
+            <label for="vehicleNo">Vehicle No. <span class="req">*</span></label>
+            <input type="text" id="vehicleNo" placeholder="e.g. MP09AB1234" required />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Parties -->
+      <section class="card">
+        <div class="card-label">CONSIGNOR & CONSIGNEE</div>
+        <div class="form-grid cols-2">
+          <div class="field">
+            <label for="from">From (Origin) <span class="req">*</span></label>
+            <input type="text" id="from" placeholder="City / Place of origin" required />
+          </div>
+          <div class="field">
+            <label for="to">To (Destination) <span class="req">*</span></label>
+            <input type="text" id="to" placeholder="City / Destination" required />
+          </div>
+          <div class="field">
+            <label for="consignorName">Consignor Name & Address</label>
+            <textarea id="consignorName" rows="2" placeholder="Full name and address of sender"></textarea>
+          </div>
+          <div class="field">
+            <label for="consigneeName">Consignee Name & Address</label>
+            <textarea id="consigneeName" rows="2" placeholder="Full name and address of receiver"></textarea>
+          </div>
+          <div class="field">
+            <label for="gstin">GSTIN No. Consignor</label>
+            <input type="text" id="gstincsg" placeholder="e.g. 23XXXXX0000X1ZX" />
+          </div>
+          <div class="field">
+            <label for="gstin">GSTIN No. Consignee</label>
+            <input type="text" id="gstin" placeholder="e.g. 23XXXXX0000X1ZX" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Goods Details -->
+      <section class="card">
+        <div class="card-label">GOODS DETAILS</div>
+        <div class="form-grid cols-3">
+          <div class="field">
+            <label for="description">Description (Said to Contain) <span class="req">*</span></label>
+            <input type="text" id="description" placeholder="e.g. Electronic goods" required />
+          </div>
+          <div class="field">
+            <label for="privateMarks">Private Mark</label>
+            <input type="text" id="privateMarks" placeholder="Optional mark" />
+          </div>
+          <div class="field">
+            <label for="invoiceNo">Invoice No.</label>
+            <input type="text" id="invoiceNo" placeholder="e.g. INV-001" />
+          </div>
+          <div class="field">
+            <label for="valueGoods">Value of Goods (₹)</label>
+            <input type="number" id="valueGoods" placeholder="e.g. 50000" min="0" />
+          </div>
+          <div class="field">
+            <label for="weightActual">Actual Weight (kg)</label>
+            <input type="number" id="weightActual" placeholder="e.g. 120" min="0" />
+          </div>
+          <div class="field">
+            <label for="weightCharged">Charged Weight (kg)</label>
+            <input type="number" id="weightCharged" placeholder="e.g. 130" min="0" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Freight Details -->
+      <section class="card">
+        <div class="card-label">FREIGHT & CHARGES</div>
+        <div class="form-grid cols-3">
+          <div class="field">
+            <label>Payment Mode</label>
+            <div class="toggle-group">
+              <label class="toggle-opt"><input type="radio" name="payMode" value="To Pay" checked/><span>To Pay</span></label>
+              <label class="toggle-opt"><input type="radio" name="payMode" value="Paid"/><span>Paid</span></label>
+              <label class="toggle-opt"><input type="radio" name="payMode" value="TBB"/><span>TBB</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="basicFreight">Basic Freight (₹)</label>
+            <input type="number" id="basicFreight" placeholder="0" min="0" oninput="calcTotal()" />
+          </div>
+          <div class="field">
+            <label for="cartage">Cartage / Local (₹)</label>
+            <input type="number" id="cartage" placeholder="0" min="0" oninput="calcTotal()" />
+          </div>
+          <div class="field">
+            <label for="hamali">Hamali (₹)</label>
+            <input type="number" id="hamali" placeholder="0" min="0" oninput="calcTotal()" />
+          </div>
+          <div class="field">
+            <label for="gcCharge">GC Charge (₹)</label>
+            <input type="number" id="gcCharge" placeholder="0" min="0" oninput="calcTotal()" />
+          </div>
+          <div class="field">
+            <label for="otherCharge">Other Charge (₹)</label>
+            <input type="number" id="otherCharge" placeholder="0" min="0" oninput="calcTotal()" />
+          </div>
+          <div class="field">
+            <label for="advance">Advance (₹)</label>
+            <input type="number" id="advance" placeholder="0" min="0" oninput="calcTotal()" />
+          </div>
+          <div class="field total-field">
+            <label>TOTAL (₹)</label>
+            <div class="total-display" id="totalDisplay">0</div>
+          </div>
+        </div>
+
+        <div class="form-grid cols-2" style="margin-top:1.2rem;">
+          <div class="field">
+            <label>Door Delivery</label>
+            <div class="toggle-group">
+              <label class="toggle-opt"><input type="radio" name="doorDelivery" value="Yes"/><span>Yes</span></label>
+              <label class="toggle-opt"><input type="radio" name="doorDelivery" value="No" checked/><span>No</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>POD Required</label>
+            <div class="toggle-group">
+              <label class="toggle-opt"><input type="radio" name="podRequired" value="Yes"/><span>Yes</span></label>
+              <label class="toggle-opt"><input type="radio" name="podRequired" value="No" checked/><span>No</span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="action-row">
+        <button type="button" class="btn-secondary" onclick="resetForm()">↺ Reset</button>
+        <button type="submit" class="btn-primary" id="generateBtn">
+          <span class="btn-icon">⬇</span> Generate PDF
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <footer>
+    <span>YASHVARDHAN LOGISTICS</span> &nbsp;|&nbsp; GSTIN: 23ALVPT7013J1ZM &nbsp;|&nbsp; PAN: ALVPT7013J &nbsp;|&nbsp; Indore (M.P.)
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
