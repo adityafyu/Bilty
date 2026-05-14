@@ -1,4 +1,13 @@
-/* ── Utility ─────────────────────────────────────── */
+/* â”€â”€ Utility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+
+
+
+// ── LOGO PATH ──────────────────────────────────────────────
+// Paste your logo filename here (must be in the same folder as this HTML file)
+const LOGO_PATH = 'logo.png'; // <- change this to your actual image filename
+// ────────────────────────────────────────────────────────────
+
+
 const $ = id => document.getElementById(id);
 const val = id => ($(id)?.value?.trim() || '');
 const num = id => parseFloat($(id)?.value || 0) || 0;
@@ -30,8 +39,8 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-/* ── PDF Generation ──────────────────────────────── */
-function generatePDF() {
+/* â”€â”€ PDF Generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+function generatePDF(logoDataUrl) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
@@ -39,7 +48,7 @@ function generatePDF() {
   const W = 190;
   let y = M;
 
-  // ── Helpers ─────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const box = (x, y, w, h) => {
     doc.setDrawColor(0, 0, 0);
     doc.rect(x, y, w, h);
@@ -56,7 +65,7 @@ function generatePDF() {
 
   const money = n => n ? 'Rs. ' + n.toLocaleString('en-IN') : '';
 
-  // ── Data ───────────────────────
+  // â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const data = {
 
     date: val('dated'),
@@ -87,30 +96,73 @@ function generatePDF() {
       num('advance')
   };
 
+  // â”€â”€ HEADER BOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // ── HEADER BOX ─────────────────
-  box(M, y, W, 25);
-  doc.setTextColor(0, 0, 255);
-  text('YASHVARDHAN LOGISTICS', 105, y + 6, 18, 'bold', 'center');
-  doc.setTextColor(0, 0, 0);
-  text('Email : yashvardhanlogistics@gmail.com', M + 2, y + 12, 10, 'bold');
-  text('H.O : 39,ATS NavlaKha near maruti tiles, Lohamandi, Indore', M + 2, y + 17);
-  text('Phone: 9876497400 | 9826978930, Landline: 07314880555', M + 2, y + 22);
+box(M, y, W, 25);
 
-  // right alignment
-  text('GSTIN: 23ALVPT7013J1ZM | PAN : ALVPT7013J', M + W, y+17, 9, 'normal', 'right');
-  text('Subject to Indore Jurisdiction', M + W, y + 22, 9, 'normal', 'right');
+let textStartX = M + 2; // default (no logo)
 
+// ✅ LOGO + COMPANY NAME
+if (logoDataUrl) {
+  let format = 'JPEG';
+  if (logoDataUrl.startsWith('data:image/png')) format = 'PNG';
 
-  y += 25;
+  try {
+    // Logo
+    doc.addImage(logoDataUrl, format, M + 2, y + 3, 18, 18);
 
-  // ── TOP ROW ────────────────────
+    // Shift text because logo exists
+    textStartX = M + 22;
+
+    // Company Name
+    doc.setTextColor(100, 149, 237); // light blue (Cornflower Blue)
+    text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
+    doc.setTextColor(0, 0, 0);
+
+  } catch (e) {
+    console.error("Failed to add logo", e);
+
+    // fallback center
+    doc.setTextColor(100, 149, 237); // light blue (Cornflower Blue)
+    text('YASHVARDHAN LOGISTICS', M + W / 2, y + 8, 16, 'bold', 'center');
+    doc.setTextColor(0, 0, 0);
+  }
+
+} else {
+  // No logo → align nicely left (NOT center for better layout)
+  text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
+}
+
+// ✅ LEFT SIDE DETAILS (proper flow)
+text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
+text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
+text('Phone: 9876497400 | 9826978930 | Landline: 07314880555', textStartX, y + 24);
+
+// ✅ RIGHT SIDE GST (clean alignment)
+text(
+  'GSTIN: 23ALVPT7013J1ZM | PAN: ALVPT7013J',
+  M + W - 2,
+  y + 14,
+  9,
+  'normal',
+  'right'
+);
+
+// ❌ REMOVED: Subject to Jurisdiction
+
+// Optional divider (makes it look premium)
+doc.line(M, y + 26, M + W, y + 26);
+
+y += 28;
+
+  // â”€â”€ TOP ROW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 10);
   text(`Date: ${data.date}`, M + 35, y + 6);
   text(`Vehicle No: ${data.vehicle}`, M + 130, y + 6);
 
   y += 10;
 
-  // ── FROM / TO ──────────────────
+  // â”€â”€ FROM / TO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W / 2, 15);
   text('FROM:', M + 2, y + 5, 9, 'bold');
   text(data.from, M + 2, y + 10);
@@ -121,7 +173,7 @@ function generatePDF() {
 
   y += 15;
 
-  // ── CONSIGNOR / CONSIGNEE ─────
+  // â”€â”€ CONSIGNOR / CONSIGNEE â”€â”€â”€â”€â”€
   box(M, y, W / 2, 20);
   text('CONSIGNOR:', M + 2, y + 5, 9, 'bold');
   text(data.consignor, M + 2, y + 10);
@@ -136,7 +188,7 @@ function generatePDF() {
 
   y += 20;
 
-  // ── GOODS TABLE ────────────────
+  // â”€â”€ GOODS TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 10);
   text('Description', M + 2, y + 6, 9, 'bold');
   text('Weight', M + 130, y + 6, 9, 'bold');
@@ -151,15 +203,15 @@ function generatePDF() {
 
   y += 20;
 
-  // ── EXTRA DETAILS ──────────────
+  // â”€â”€ EXTRA DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 10);
   text(`Value of Goods: ${data.valueGoods}`, M + 2, y + 6);
   text(`Payment Mode: ${data.payMode}`, M + 110, y + 6);
 
   y += 10;
 
-  // ── CHARGES TABLE ─────────────
-  // ── CHARGES TABLE (DYNAMIC HEIGHT) ─────────────
+  // â”€â”€ CHARGES TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // â”€â”€ CHARGES TABLE (DYNAMIC HEIGHT) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   const charges = [
     ['Basic Freight', money(data.basic)],
@@ -174,7 +226,7 @@ function generatePDF() {
   let rowHeight = 7;
   let padding = 7;
 
-  // 👉 calculate total height
+  // ðŸ‘‰ calculate total height
   let boxHeight = charges.length * rowHeight + padding;
 
   // draw box with correct height
@@ -198,26 +250,42 @@ function generatePDF() {
 
   y += boxHeight;
 
-  // ── FOOTER ────────────────────
+  // â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 20);
 
   text('Receiver Signature', M + 5, y + 15);
   text('Booking Clerk', M + 80, y + 15);
   text('Authorised Signatory', M + 140, y + 15);
 
-  // ── SAVE ──────────────────────
+  // â”€â”€ SAVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   doc.save(`Bilty_${data.gcNo || 'file'}.pdf`);
 
 
 }
 
-/* ── Form Submit ─────────────────────────────────── */
+/* â”€â”€ Form Submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 document.getElementById('invoiceForm').addEventListener('submit', function (e) {
   e.preventDefault();
-  generatePDF();
+
+  // Load logo from the fixed path, convert to base64, then generate PDF
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function () {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    const dataUrl = canvas.toDataURL('image/png');
+    generatePDF(dataUrl);
+  };
+  img.onerror = function () {
+    console.warn('Logo not found at: ' + LOGO_PATH + '. Generating PDF without logo.');
+    generatePDF(null);
+  };
+  img.src = LOGO_PATH;
 });
 
-/* ── Init total on load ──────────────────────────── */
+/* â”€â”€ Init total on load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 window.addEventListener('load', () => {
   calcTotal();
   // Set today's date as default
