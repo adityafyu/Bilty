@@ -1,0 +1,23 @@
+{
+  "name": "yashvardhan-logistics-bilty",
+  "version": "1.0.0",
+  "description": "Yashvardhan Logistics - Invoice/Bilty Generator",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adityafyu/Bilty.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adityafyu/Bilty/issues"
+  },
+  "homepage": "https://github.com/adityafyu/Bilty#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
