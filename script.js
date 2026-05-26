@@ -53,10 +53,15 @@ function generatePDF(logoDataUrl) {
     doc.setDrawColor(0, 0, 0);
     doc.rect(x, y, w, h);
   };
-  const text = (t, x, y, size = 9, style = 'normal', align = 'left') => {
+  const text = (t, x, y, size = 9, style = 'bold', align = 'left') => {
     doc.setFont('helvetica', style);
     doc.setFontSize(size);
     doc.text(String(t || ''), x, y, { align });
+  };
+  const heading = (t, x, y, align = 'left') => {
+    doc.setTextColor(0, 128, 0); // dark green (professional)
+    text(t, x, y, 9, 'bold', align);
+    doc.setTextColor(0, 0, 0); // reset
   };
 
   const val = id => document.getElementById(id)?.value || '';
@@ -98,62 +103,61 @@ function generatePDF(logoDataUrl) {
 
   // â”€â”€ HEADER BOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // ── HEADER BOX ─────────────────
-box(M, y, W, 25);
+  box(M, y, W, 25);
 
-let textStartX = M + 2; // default (no logo)
+  let textStartX = M + 2; // default (no logo)
 
-// ✅ LOGO + COMPANY NAME
-if (logoDataUrl) {
-  let format = 'JPEG';
-  if (logoDataUrl.startsWith('data:image/png')) format = 'PNG';
+  // ✅ LOGO + COMPANY NAME
+  if (logoDataUrl) {
+    let format = 'JPEG';
+    if (logoDataUrl.startsWith('data:image/png')) format = 'PNG';
 
-  try {
-    // Logo
-    doc.addImage(logoDataUrl, format, M + 2, y + 3, 18, 18);
+    try {
+      // Logo
+      doc.addImage(logoDataUrl, format, M + 2, y + 3, 18, 18);
 
-    // Shift text because logo exists
-    textStartX = M + 22;
+      // Shift text because logo exists
+      textStartX = M + 22;
 
-    // Company Name
-    doc.setTextColor(100, 149, 237); // light blue (Cornflower Blue)
+      // Company Name
+      doc.setTextColor(100, 149, 237); // light blue 
+      text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
+      doc.setTextColor(0, 0, 0);
+
+    } catch (e) {
+      console.error("Failed to add logo", e);
+
+      // fallback center
+      doc.setTextColor(100, 149, 237); // light blue 
+      text('YASHVARDHAN LOGISTICS', M + W / 2, y + 8, 16, 'bold', 'center');
+      doc.setTextColor(0, 0, 0);
+    }
+
+  } else {
+    // No logo → align nicely left (NOT center for better layout)
     text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
-    doc.setTextColor(0, 0, 0);
-
-  } catch (e) {
-    console.error("Failed to add logo", e);
-
-    // fallback center
-    doc.setTextColor(100, 149, 237); // light blue (Cornflower Blue)
-    text('YASHVARDHAN LOGISTICS', M + W / 2, y + 8, 16, 'bold', 'center');
-    doc.setTextColor(0, 0, 0);
   }
 
-} else {
-  // No logo → align nicely left (NOT center for better layout)
-  text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
-}
+  // ✅ LEFT SIDE DETAILS (proper flow)
+  text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
+  text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
+  text('Phone: 9876497400 | 9826978930 | Landline: 07314880555', textStartX, y + 24);
 
-// ✅ LEFT SIDE DETAILS (proper flow)
-text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
-text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
-text('Phone: 9876497400 | 9826978930 | Landline: 07314880555', textStartX, y + 24);
+  // ✅ RIGHT SIDE GST (clean alignment)
+  text(
+    'GSTIN: 23ALVPT7013J1ZM | PAN: ALVPT7013J',
+    M + W - 2,
+    y + 14,
+    9,
+    'normal',
+    'right'
+  );
 
-// ✅ RIGHT SIDE GST (clean alignment)
-text(
-  'GSTIN: 23ALVPT7013J1ZM | PAN: ALVPT7013J',
-  M + W - 2,
-  y + 14,
-  9,
-  'normal',
-  'right'
-);
 
-// ❌ REMOVED: Subject to Jurisdiction
+  // Optional divider (makes it look premium)
+  doc.line(M, y + 26, M + W, y + 26);
 
-// Optional divider (makes it look premium)
-doc.line(M, y + 26, M + W, y + 26);
-
-y += 28;
+  y += 28;
 
   // â”€â”€ TOP ROW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 10);
@@ -164,49 +168,55 @@ y += 28;
 
   // â”€â”€ FROM / TO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W / 2, 15);
-  text('FROM:', M + 2, y + 5, 9, 'bold');
+  heading('FROM:', M + 2, y + 5);
   text(data.from, M + 2, y + 10);
 
   box(M + W / 2, y, W / 2, 15);
-  text('TO:', M + W / 2 + 2, y + 5, 9, 'bold');
+  heading('TO:', M + W / 2 + 2, y + 5);
   text(data.to, M + W / 2 + 2, y + 10);
 
   y += 15;
 
   // â”€â”€ CONSIGNOR / CONSIGNEE â”€â”€â”€â”€â”€
   box(M, y, W / 2, 20);
-  text('CONSIGNOR:', M + 2, y + 5, 9, 'bold');
+  heading('CONSIGNOR:', M + 2, y + 5);
   text(data.consignor, M + 2, y + 10);
-  text('CONSIGNOR GSTIN:', M + 2, y + 15, 9, 'bold');
-  text(data.gstin, M + 2, y + 20)
+
+  heading('GSTIN:', M + 2, y + 16);
+  text(data.gstin, M + 25, y + 16);
 
   box(M + W / 2, y, W / 2, 20);
-  text('CONSIGNEE:', M + W / 2 + 2, y + 5, 9, 'bold');
+  heading('CONSIGNEE:', M + W / 2 + 2, y + 5);
   text(data.consignee, M + W / 2 + 2, y + 10);
-  text('CONSIGNEE GSTIN:', M + W / 2 + 2, y + 15, 9, 'bold');
-  text(data.consigneegst, M + W / 2 + 2, y + 20)
+
+  heading('GSTIN:', M + W / 2 + 2, y + 16);
+
+  text(data.consigneegst, M + W / 2 + 25, y + 16);
 
   y += 20;
 
   // â”€â”€ GOODS TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 10);
-  text('Description', M + 2, y + 6, 9, 'bold');
-  text('Weight', M + 130, y + 6, 9, 'bold');
-  text('Invoice No', M + 160, y + 6, 9, 'bold');
+  heading('Description', M + 2, y + 6);
+  heading('Weight(M.T)', M + 110, y + 6);
+  heading('Invoice No', M + 160, y + 6);
 
   y += 10;
 
   box(M, y, W, 20);
   text(data.description, M + 2, y + 8);
-  text(data.weight, M + 130, y + 8);
+  text(data.weight, M + 110, y + 8);
   text(data.invoiceNo, M + 160, y + 8);
 
   y += 20;
 
   // â”€â”€ EXTRA DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   box(M, y, W, 10);
-  text(`Value of Goods: ${data.valueGoods}`, M + 2, y + 6);
-  text(`Payment Mode: ${data.payMode}`, M + 110, y + 6);
+  heading('Value of Goods:', M + 2, y + 6);
+  text(data.valueGoods, M + 40, y + 6);
+
+  heading('Payment Mode:', M + 110, y + 6);
+  text(data.payMode, M + 150, y + 6);
 
   y += 10;
 
@@ -227,7 +237,7 @@ y += 28;
   let padding = 7;
 
   // ðŸ‘‰ calculate total height
-  let boxHeight = charges.length * rowHeight + padding;
+  let boxHeight = charges.length * rowHeight + 4;
 
   // draw box with correct height
   box(M, y, W, boxHeight);
@@ -235,17 +245,30 @@ y += 28;
   // start writing inside
   let cy = y + 6;
 
-  charges.forEach(([label, value, isTotal]) => {
+ charges.forEach(([label, value, isTotal], i) => {
 
-    // line before TOTAL
+    let rowY = y + (i * rowHeight) + 5; // consistent spacing
+
+    // Divider before TOTAL
     if (isTotal) {
-      doc.line(M, cy - 2, M + W, cy - 2);
+      doc.setDrawColor(0, 128, 0);
+      doc.setLineWidth(0.5);
+      doc.line(M, rowY - 3, M + W, rowY - 3);
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.2);
     }
 
-    text(label, M + 2, cy, 9, isTotal ? 'bold' : 'normal');
-    text(value, M + W - 2, cy, 9, isTotal ? 'bold' : 'normal', 'right');
+    if (isTotal) {
+      doc.setFontSize(11);
 
-    cy += rowHeight;
+      heading(label, M + 2, rowY);
+      text(value, M + W - 2, rowY, 11, 'bold', 'right');
+
+      doc.setFontSize(9);
+    } else {
+      text(label, M + 2, rowY);
+      text(value, M + W - 2, rowY, 9, 'bold', 'right');
+    }
   });
 
   y += boxHeight;
