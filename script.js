@@ -1,10 +1,10 @@
-/* â”€â”€ Utility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+// Utility
 
 
 
 // ── LOGO PATH ──────────────────────────────────────────────
-// Paste your logo filename here (must be in the same folder as this HTML file)
-const LOGO_PATH = 'logo.png'; // <- change this to your actual image filename
+// 
+const LOGO_PATH = 'logo.png'; // <
 // ────────────────────────────────────────────────────────────
 
 
@@ -39,16 +39,33 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-/* â”€â”€ PDF Generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+// PDF Generation
 function generatePDF(logoDataUrl) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const GREEN_BG = [11,93,42];     // dark green
+  const WHITE = [255, 255, 255];
+  const BLACK = [0, 0, 0];  
+
+  // BACKGROUND GREEN
+// FULL PAGE BACKGROUND
+  doc.setFillColor(11, 93, 42); // dark green
+  doc.rect(0, 0, 210, 297, 'F'); // full A4 page
+
+  doc.setFillColor(255,255,255);
+  doc.rect(5, 5, 200, 287, 'F');
+  
 
   const M = 10;
   const W = 190;
   let y = M;
 
-  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // LIGHT INNER PANEL
+  doc.setFillColor(240,248,242);
+  doc.rect(M, M, W, 277, 'F');
+
+  //  Helpers 
   const box = (x, y, w, h) => {
     doc.setDrawColor(0, 0, 0);
     doc.rect(x, y, w, h);
@@ -70,7 +87,7 @@ function generatePDF(logoDataUrl) {
 
   const money = n => n ? 'Rs. ' + n.toLocaleString('en-IN') : '';
 
-  // â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  Data 
   const data = {
 
     date: val('dated'),
@@ -100,10 +117,17 @@ function generatePDF(logoDataUrl) {
       num('otherCharge') -
       num('advance')
   };
+  doc.setFillColor(200, 230, 210);
+  doc.rect(M, y, W, 10, 'F');
+  
+  doc.setDrawColor(0, 100, 0);
+  doc.setLineWidth(0.3);
+  doc.line(M, y + 10, M + W, y + 10);
 
-  // â”€â”€ HEADER BOX â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  HEADER BOX 
   // ── HEADER BOX ─────────────────
-  box(M, y, W, 25);
+  doc.setFillColor(6,64,28); 
+  doc.rect(M, y, W, 25, 'F');
 
   let textStartX = M + 2; // default (no logo)
 
@@ -137,7 +161,7 @@ function generatePDF(logoDataUrl) {
     // No logo → align nicely left (NOT center for better layout)
     text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
   }
-
+  doc.setTextColor(255,255,255);
   // ✅ LEFT SIDE DETAILS (proper flow)
   text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
   text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
@@ -152,54 +176,72 @@ function generatePDF(logoDataUrl) {
     'normal',
     'right'
   );
-
-
+  doc.setTextColor(0,0,0);
   // Optional divider (makes it look premium)
   doc.line(M, y + 26, M + W, y + 26);
 
   y += 28;
 
-  // â”€â”€ TOP ROW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  box(M, y, W, 10);
+  // TOP ROW 
+  // green bg
+  doc.setFillColor(...GREEN_BG); 
+  doc.rect(M, y, W, 10, 'F');
+  // box(M, y, W, 10);
+  // white  text
+  doc.setTextColor(...WHITE);
   text(`Date: ${data.date}`, M + 35, y + 6);
   text(`Vehicle No: ${data.vehicle}`, M + 130, y + 6);
 
   y += 10;
+  doc.setTextColor(...BLACK);
+  
 
-  // â”€â”€ FROM / TO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  FROM / TO 
   box(M, y, W / 2, 15);
   heading('FROM:', M + 2, y + 5);
+  doc.setTextColor(220,20,60);
   text(data.from, M + 2, y + 10);
 
   box(M + W / 2, y, W / 2, 15);
   heading('TO:', M + W / 2 + 2, y + 5);
+  doc.setTextColor(220,20,60);
   text(data.to, M + W / 2 + 2, y + 10);
 
   y += 15;
 
-  // â”€â”€ CONSIGNOR / CONSIGNEE â”€â”€â”€â”€â”€
+  //  CONSIGNOR / CONSIGNEE 
   box(M, y, W / 2, 20);
   heading('CONSIGNOR:', M + 2, y + 5);
+  doc.setTextColor(220,20,60);
   text(data.consignor, M + 2, y + 10);
 
   heading('GSTIN:', M + 2, y + 16);
+  doc.setTextColor(220,20,60);
   text(data.gstin, M + 25, y + 16);
 
   box(M + W / 2, y, W / 2, 20);
   heading('CONSIGNEE:', M + W / 2 + 2, y + 5);
+  doc.setTextColor(220,20,60);
   text(data.consignee, M + W / 2 + 2, y + 10);
 
   heading('GSTIN:', M + W / 2 + 2, y + 16);
-
+  doc.setTextColor(220,20,60);
   text(data.consigneegst, M + W / 2 + 25, y + 16);
+
+  doc.setTextColor(...BLACK);
 
   y += 20;
 
-  // â”€â”€ GOODS TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  box(M, y, W, 10);
-  heading('Description', M + 2, y + 6);
-  heading('Weight(M.T)', M + 110, y + 6);
-  heading('Invoice No', M + 160, y + 6);
+  
+  //  GOODS TABLE 
+
+  doc.setFillColor(...GREEN_BG);
+  doc.rect(M, y, W, 10, 'F');
+  doc.setTextColor(...WHITE);
+  text('Description', M + 2, y + 6);
+  text('Weight(M.T)', M + 110, y + 6);
+  text('Invoice No', M + 160, y + 6);
+  doc.setTextColor(...BLACK);
 
   y += 10;
 
@@ -207,21 +249,29 @@ function generatePDF(logoDataUrl) {
   text(data.description, M + 2, y + 8);
   text(data.weight, M + 110, y + 8);
   text(data.invoiceNo, M + 160, y + 8);
+  
 
   y += 20;
 
-  // â”€â”€ EXTRA DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  box(M, y, W, 10);
-  heading('Value of Goods:', M + 2, y + 6);
+  // EXTRA DETAILS
+  doc.setFillColor(...GREEN_BG);
+  doc.rect(M, y, W, 10, 'F');
+  doc.setTextColor(...WHITE); 
+  text('Value of Goods:', M + 2, y + 6);
   text(data.valueGoods, M + 40, y + 6);
 
-  heading('Payment Mode:', M + 110, y + 6);
+  text('Payment Mode:', M + 110, y + 6);
   text(data.payMode, M + 150, y + 6);
+  doc.setTextColor(0,0,0);  
 
   y += 10;
+  
 
-  // â”€â”€ CHARGES TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  // â”€â”€ CHARGES TABLE (DYNAMIC HEIGHT) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+ 
+
+  
+  // CHARGES TABLE (DYNAMIC HEIGHT) 
 
   const charges = [
     ['Basic Freight', money(data.basic)],
@@ -233,13 +283,15 @@ function generatePDF(logoDataUrl) {
     ['TOTAL', money(data.total), true]
   ];
 
+
   let rowHeight = 7;
   let padding = 7;
 
   // ðŸ‘‰ calculate total height
-  let boxHeight = charges.length * rowHeight + 4;
+  let boxHeight = charges.length * rowHeight + 0.5;
 
   // draw box with correct height
+  
   box(M, y, W, boxHeight);
 
   // start writing inside
@@ -259,34 +311,42 @@ function generatePDF(logoDataUrl) {
     }
 
     if (isTotal) {
+
+      doc.setFillColor(...GREEN_BG);
+      doc.rect(M, rowY - 5, W, rowHeight, 'F');
+
+      doc.setTextColor(255,255,255);
       doc.setFontSize(11);
 
-      heading(label, M + 2, rowY);
+      text(label, M + 2, rowY);
       text(value, M + W - 2, rowY, 11, 'bold', 'right');
 
+      doc.setTextColor(0,0,0);
       doc.setFontSize(9);
+
     } else {
       text(label, M + 2, rowY);
       text(value, M + W - 2, rowY, 9, 'bold', 'right');
     }
   });
+  
 
   y += boxHeight;
 
-  // â”€â”€ FOOTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  FOOTER 
   box(M, y, W, 20);
 
   text('Receiver Signature', M + 5, y + 15);
   text('Booking Clerk', M + 80, y + 15);
   text('Authorised Signatory', M + 140, y + 15);
 
-  // â”€â”€ SAVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  SAVE 
   doc.save(`Bilty_${data.gcNo || 'file'}.pdf`);
 
 
 }
 
-/* â”€â”€ Form Submit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+// Form Submit 
 document.getElementById('invoiceForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
@@ -308,7 +368,7 @@ document.getElementById('invoiceForm').addEventListener('submit', function (e) {
   img.src = LOGO_PATH;
 });
 
-/* â”€â”€ Init total on load â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+// Init total on load
 window.addEventListener('load', () => {
   calcTotal();
   // Set today's date as default
