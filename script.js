@@ -217,7 +217,7 @@ function generatePDF(logoDataUrl) {
 
   heading('GSTIN:', M + 2, y + 16);
   doc.setTextColor(220,20,60);
-  text(data.gstin, M + 25, y + 16);
+  text(data.gstin, M + 13, y + 16);
 
   box(M + W / 2, y, W / 2, 20);
   heading('CONSIGNEE:', M + W / 2 + 2, y + 5);
@@ -226,7 +226,7 @@ function generatePDF(logoDataUrl) {
 
   heading('GSTIN:', M + W / 2 + 2, y + 16);
   doc.setTextColor(220,20,60);
-  text(data.consigneegst, M + W / 2 + 25, y + 16);
+  text(data.consigneegst, M + W / 2 + 13, y + 16);
 
   doc.setTextColor(...BLACK);
 
