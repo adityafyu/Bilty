@@ -1,12 +1,4 @@
-// Utility
-
-
-
-// ── LOGO PATH ──────────────────────────────────────────────
-// 
-const LOGO_PATH = 'logo.png'; // <
-// ────────────────────────────────────────────────────────────
-
+const LOGO_PATH = 'logo.png'; 
 
 const $ = id => document.getElementById(id);
 const val = id => ($(id)?.value?.trim() || '');
@@ -39,19 +31,18 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// PDF Generation
+
 function generatePDF(logoDataUrl) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-  const GREEN_BG = [11,93,42];     // dark green
+  const GREEN_BG = [11,93,42];    
   const WHITE = [255, 255, 255];
   const BLACK = [0, 0, 0];  
 
-  // BACKGROUND GREEN
-// FULL PAGE BACKGROUND
-  doc.setFillColor(11, 93, 42); // dark green
-  doc.rect(0, 0, 210, 297, 'F'); // full A4 page
+ 
+  doc.setFillColor(11, 93, 42);
+  doc.rect(0, 0, 210, 297, 'F'); 
 
   doc.setFillColor(255,255,255);
   doc.rect(5, 5, 200, 287, 'F');
@@ -61,11 +52,10 @@ function generatePDF(logoDataUrl) {
   const W = 190;
   let y = M;
 
-  // LIGHT INNER PANEL
   doc.setFillColor(240,248,242);
   doc.rect(M, M, W, 277, 'F');
 
-  //  Helpers 
+  
   const box = (x, y, w, h) => {
     doc.setDrawColor(0, 0, 0);
     doc.rect(x, y, w, h);
@@ -76,9 +66,9 @@ function generatePDF(logoDataUrl) {
     doc.text(String(t || ''), x, y, { align });
   };
   const heading = (t, x, y, align = 'left') => {
-    doc.setTextColor(0, 128, 0); // dark green (professional)
+    doc.setTextColor(0, 128, 0); 
     text(t, x, y, 9, 'bold', align);
-    doc.setTextColor(0, 0, 0); // reset
+    doc.setTextColor(0, 0, 0); 
   };
 
   const val = id => document.getElementById(id)?.value || '';
@@ -87,11 +77,12 @@ function generatePDF(logoDataUrl) {
 
   const money = n => n ? 'Rs. ' + n.toLocaleString('en-IN') : '';
 
-  //  Data 
+ 
   const data = {
 
     date: val('dated'),
     vehicle: val('vehicleNo'),
+    lrNo: val('lrNo'),
     from: val('from'),
     to: val('to'),
     consignor: val('consignorName'),
@@ -124,73 +115,71 @@ function generatePDF(logoDataUrl) {
   doc.setLineWidth(0.3);
   doc.line(M, y + 10, M + W, y + 10);
 
-  //  HEADER BOX 
-  // ── HEADER BOX ─────────────────
+  
   doc.setFillColor(6,64,28); 
   doc.rect(M, y, W, 25, 'F');
 
-  let textStartX = M + 2; // default (no logo)
+  let textStartX = M + 2; 
 
-  // ✅ LOGO + COMPANY NAME
+ 
   if (logoDataUrl) {
     let format = 'JPEG';
     if (logoDataUrl.startsWith('data:image/png')) format = 'PNG';
 
     try {
-      // Logo
+     
       doc.addImage(logoDataUrl, format, M + 2, y + 3, 18, 18);
 
-      // Shift text because logo exists
+     
       textStartX = M + 22;
 
-      // Company Name
-      doc.setTextColor(100, 149, 237); // light blue 
+     
+      doc.setTextColor(100, 149, 237); 
       text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
       doc.setTextColor(0, 0, 0);
 
     } catch (e) {
       console.error("Failed to add logo", e);
 
-      // fallback center
-      doc.setTextColor(100, 149, 237); // light blue 
+      
+      doc.setTextColor(100, 149, 237); 
       text('YASHVARDHAN LOGISTICS', M + W / 2, y + 8, 16, 'bold', 'center');
       doc.setTextColor(0, 0, 0);
     }
 
   } else {
-    // No logo → align nicely left (NOT center for better layout)
+    
     text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
   }
   doc.setTextColor(255,255,255);
-  // ✅ LEFT SIDE DETAILS (proper flow)
+ 
   text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
   text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
-  text('Phone: 9876497400 | 9826978930 | Landline: 07314880555', textStartX, y + 24);
+  text('Phone: 9876497400 | 9826978930 | 7067251280 | 7748017884 | Landline: 07314880555', textStartX, y + 24);
 
-  // ✅ RIGHT SIDE GST (clean alignment)
+  
   text(
     'GSTIN: 23ALVPT7013J1ZM | PAN: ALVPT7013J',
     M + W - 2,
-    y + 14,
+    y + 8,
     9,
-    'normal',
+    'bold',
     'right'
   );
   doc.setTextColor(0,0,0);
-  // Optional divider (makes it look premium)
+ 
   doc.line(M, y + 26, M + W, y + 26);
 
   y += 28;
 
-  // TOP ROW 
-  // green bg
+ 
   doc.setFillColor(...GREEN_BG); 
   doc.rect(M, y, W, 10, 'F');
-  // box(M, y, W, 10);
-  // white  text
+  
   doc.setTextColor(...WHITE);
-  text(`Date: ${data.date}`, M + 35, y + 6);
-  text(`Vehicle No: ${data.vehicle}`, M + 130, y + 6);
+  text(`Date: ${data.date}`, M + 2, y + 6);
+  text(`Vehicle No: ${data.vehicle}`, M + 75, y + 6);
+  text('LR No.: ${data.lrNo}', M + 150, y + 6};
 
   y += 10;
   doc.setTextColor(...BLACK);
