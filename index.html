@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Yashvardhan Logistics – Invoice Generator</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
+
 <body>
   <div class="bg-grid"></div>
   <div class="scanline"></div>
@@ -47,17 +49,17 @@
         </div>
       </section>
 
-      
+
       <section class="card">
         <div class="card-label">CONSIGNOR & CONSIGNEE</div>
         <div class="form-grid cols-2">
           <div class="field">
             <label for="from">From (Origin) <span class="req">*</span></label>
-            <input type="text" id="from" placeholder="City / Place of origin" />
+            <input type="text" id="from" placeholder="City / Place of origin"  />
           </div>
           <div class="field">
             <label for="to">To (Destination) <span class="req">*</span></label>
-            <input type="text" id="to" placeholder="City / Destination" />
+            <input type="text" id="to" placeholder="City / Destination"  />
           </div>
           <div class="field">
             <label for="consignorName">Consignor Name & Address</label>
@@ -78,13 +80,13 @@
         </div>
       </section>
 
-     
+    
       <section class="card">
         <div class="card-label">GOODS DETAILS</div>
         <div class="form-grid cols-3">
           <div class="field">
             <label for="description">Description (Said to Contain) <span class="req">*</span></label>
-            <input type="text" id="description" placeholder="e.g. Electronic goods" />
+            <input type="text" id="description" placeholder="e.g. Electronic goods"/>
           </div>
           <div class="field">
             <label for="privateMarks">Private Mark</label>
@@ -109,15 +111,17 @@
         </div>
       </section>
 
+      
       <section class="card">
         <div class="card-label">FREIGHT & CHARGES</div>
         <div class="form-grid cols-3">
           <div class="field">
             <label>Payment Mode</label>
             <div class="toggle-group">
-              <label class="toggle-opt"><input type="radio" name="payMode" value="To Pay" checked/><span>To Pay</span></label>
-              <label class="toggle-opt"><input type="radio" name="payMode" value="Paid"/><span>Paid</span></label>
-              <label class="toggle-opt"><input type="radio" name="payMode" value="TBB"/><span>TBB</span></label>
+              <label class="toggle-opt"><input type="radio" name="payMode" value="To Pay" checked /><span>To
+                  Pay</span></label>
+              <label class="toggle-opt"><input type="radio" name="payMode" value="Paid" /><span>Paid</span></label>
+              <label class="toggle-opt"><input type="radio" name="payMode" value="TBB" /><span>TBB</span></label>
             </div>
           </div>
           <div class="field">
@@ -154,15 +158,17 @@
           <div class="field">
             <label>Door Delivery</label>
             <div class="toggle-group">
-              <label class="toggle-opt"><input type="radio" name="doorDelivery" value="Yes"/><span>Yes</span></label>
-              <label class="toggle-opt"><input type="radio" name="doorDelivery" value="No" checked/><span>No</span></label>
+              <label class="toggle-opt"><input type="radio" name="doorDelivery" value="Yes" /><span>Yes</span></label>
+              <label class="toggle-opt"><input type="radio" name="doorDelivery" value="No"
+                  checked /><span>No</span></label>
             </div>
           </div>
           <div class="field">
             <label>POD Required</label>
             <div class="toggle-group">
-              <label class="toggle-opt"><input type="radio" name="podRequired" value="Yes"/><span>Yes</span></label>
-              <label class="toggle-opt"><input type="radio" name="podRequired" value="No" checked/><span>No</span></label>
+              <label class="toggle-opt"><input type="radio" name="podRequired" value="Yes" /><span>Yes</span></label>
+              <label class="toggle-opt"><input type="radio" name="podRequired" value="No"
+                  checked /><span>No</span></label>
             </div>
           </div>
         </div>
@@ -179,9 +185,11 @@
   </main>
 
   <footer>
-    <span>YASHVARDHAN LOGISTICS</span> &nbsp;|&nbsp; GSTIN: 23ALVPT7013J1ZM &nbsp;|&nbsp; PAN: ALVPT7013J &nbsp;|&nbsp; Indore (M.P.)
+    <span>YASHVARDHAN LOGISTICS</span> &nbsp;|&nbsp; GSTIN: 23ALVPT7013J1ZM &nbsp;|&nbsp; PAN: ALVPT7013J &nbsp;|&nbsp;
+    Indore (M.P.)
   </footer>
 
   <script src="script.js"></script>
 </body>
+
 </html>
