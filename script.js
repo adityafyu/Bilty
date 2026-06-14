@@ -152,8 +152,8 @@ function generatePDF(logoDataUrl) {
   doc.setTextColor(255,255,255);
 
   text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
-  text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
-  text('Phone: 9876497400 | 9826978930 | 7067251280 | 7748017884 | Landline: 07314880555', textStartX, y + 24);
+  text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore(M.P), 452001', textStartX, y + 19);
+  text('Phone: 9826497400 | 9826978930 | 7067251280 | 7748017884 | Landline: 07314880555', textStartX, y + 24);
 
   text(
     'GSTIN: 23ALVPT7013J1ZM | PAN: ALVPT7013J',
