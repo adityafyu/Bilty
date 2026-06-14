@@ -185,7 +185,7 @@ function generatePDF(logoDataUrl) {
   doc.setTextColor(...BLACK);
   
 
-  //  FROM / TO 
+  
   box(M, y, W / 2, 15);
   heading('FROM:', M + 2, y + 5);
   doc.setTextColor(220,20,60);
@@ -198,7 +198,7 @@ function generatePDF(logoDataUrl) {
 
   y += 15;
 
-  //  CONSIGNOR / CONSIGNEE 
+ 
   box(M, y, W / 2, 20);
   heading('CONSIGNOR:', M + 2, y + 5);
   doc.setTextColor(220,20,60);
@@ -222,7 +222,7 @@ function generatePDF(logoDataUrl) {
   y += 20;
 
   
-  //  GOODS TABLE 
+
 
   doc.setFillColor(...GREEN_BG);
   doc.rect(M, y, W, 10, 'F');
@@ -242,7 +242,7 @@ function generatePDF(logoDataUrl) {
 
   y += 20;
 
-  // EXTRA DETAILS
+ 
   doc.setFillColor(...GREEN_BG);
   doc.rect(M, y, W, 10, 'F');
   doc.setTextColor(...WHITE); 
@@ -259,9 +259,6 @@ function generatePDF(logoDataUrl) {
 
  
 
-  
-  // CHARGES TABLE (DYNAMIC HEIGHT) 
-
   const charges = [
     ['Basic Freight', money(data.basic)],
     ['Cartage', money(data.cartage)],
@@ -276,21 +273,17 @@ function generatePDF(logoDataUrl) {
   let rowHeight = 7;
   let padding = 7;
 
-  // ðŸ‘‰ calculate total height
-  let boxHeight = charges.length * rowHeight + 0.5;
 
-  // draw box with correct height
+  let boxHeight = charges.length * rowHeight + 0.5;
   
   box(M, y, W, boxHeight);
 
-  // start writing inside
   let cy = y + 6;
 
  charges.forEach(([label, value, isTotal], i) => {
 
-    let rowY = y + (i * rowHeight) + 5; // consistent spacing
+    let rowY = y + (i * rowHeight) + 5; 
 
-    // Divider before TOTAL
     if (isTotal) {
       doc.setDrawColor(0, 128, 0);
       doc.setLineWidth(0.5);
@@ -322,24 +315,24 @@ function generatePDF(logoDataUrl) {
 
   y += boxHeight;
 
-  //  FOOTER 
+
   box(M, y, W, 20);
 
   text('Receiver Signature', M + 5, y + 15);
   text('Booking Clerk', M + 80, y + 15);
   text('Authorised Signatory', M + 140, y + 15);
 
-  //  SAVE 
+
   doc.save(`Bilty_${data.gcNo || 'file'}.pdf`);
 
 
 }
 
-// Form Submit 
+
 document.getElementById('invoiceForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
-  // Load logo from the fixed path, convert to base64, then generate PDF
+  
   const img = new Image();
   img.crossOrigin = 'anonymous';
   img.onload = function () {
@@ -357,10 +350,10 @@ document.getElementById('invoiceForm').addEventListener('submit', function (e) {
   img.src = LOGO_PATH;
 });
 
-// Init total on load
+
 window.addEventListener('load', () => {
   calcTotal();
-  // Set today's date as default
+
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('dated').value = today;
 });
