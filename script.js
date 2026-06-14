@@ -1,4 +1,4 @@
-const LOGO_PATH = 'logo.png'; 
+const LOGO_PATH = 'logo.png'; // <
 
 const $ = id => document.getElementById(id);
 const val = id => ($(id)?.value?.trim() || '');
@@ -36,12 +36,12 @@ function generatePDF(logoDataUrl) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
-  const GREEN_BG = [11,93,42];    
+  const GREEN_BG = [11,93,42];     
   const WHITE = [255, 255, 255];
   const BLACK = [0, 0, 0];  
 
  
-  doc.setFillColor(11, 93, 42);
+  doc.setFillColor(11, 93, 42); 
   doc.rect(0, 0, 210, 297, 'F'); 
 
   doc.setFillColor(255,255,255);
@@ -55,7 +55,7 @@ function generatePDF(logoDataUrl) {
   doc.setFillColor(240,248,242);
   doc.rect(M, M, W, 277, 'F');
 
-  
+
   const box = (x, y, w, h) => {
     doc.setDrawColor(0, 0, 0);
     doc.rect(x, y, w, h);
@@ -68,7 +68,7 @@ function generatePDF(logoDataUrl) {
   const heading = (t, x, y, align = 'left') => {
     doc.setTextColor(0, 128, 0); 
     text(t, x, y, 9, 'bold', align);
-    doc.setTextColor(0, 0, 0); 
+    doc.setTextColor(0, 0, 0);
   };
 
   const val = id => document.getElementById(id)?.value || '';
@@ -77,7 +77,7 @@ function generatePDF(logoDataUrl) {
 
   const money = n => n ? 'Rs. ' + n.toLocaleString('en-IN') : '';
 
- 
+  
   const data = {
 
     date: val('dated'),
@@ -119,7 +119,7 @@ function generatePDF(logoDataUrl) {
   doc.setFillColor(6,64,28); 
   doc.rect(M, y, W, 25, 'F');
 
-  let textStartX = M + 2; 
+  let textStartX = M + 2;
 
  
   if (logoDataUrl) {
@@ -127,13 +127,12 @@ function generatePDF(logoDataUrl) {
     if (logoDataUrl.startsWith('data:image/png')) format = 'PNG';
 
     try {
-     
+      
       doc.addImage(logoDataUrl, format, M + 2, y + 3, 18, 18);
 
      
       textStartX = M + 22;
-
-     
+      
       doc.setTextColor(100, 149, 237); 
       text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
       doc.setTextColor(0, 0, 0);
@@ -141,7 +140,6 @@ function generatePDF(logoDataUrl) {
     } catch (e) {
       console.error("Failed to add logo", e);
 
-      
       doc.setTextColor(100, 149, 237); 
       text('YASHVARDHAN LOGISTICS', M + W / 2, y + 8, 16, 'bold', 'center');
       doc.setTextColor(0, 0, 0);
@@ -152,12 +150,11 @@ function generatePDF(logoDataUrl) {
     text('YASHVARDHAN LOGISTICS', textStartX, y + 8, 16, 'bold');
   }
   doc.setTextColor(255,255,255);
- 
+
   text('Email: yashvardhanlogistics@gmail.com', textStartX, y + 14);
   text('H.O: 39, ATS Navlakha near maruti tiles, Lohamandi, Indore', textStartX, y + 19);
   text('Phone: 9876497400 | 9826978930 | 7067251280 | 7748017884 | Landline: 07314880555', textStartX, y + 24);
 
-  
   text(
     'GSTIN: 23ALVPT7013J1ZM | PAN: ALVPT7013J',
     M + W - 2,
@@ -167,25 +164,23 @@ function generatePDF(logoDataUrl) {
     'right'
   );
   doc.setTextColor(0,0,0);
- 
+  
   doc.line(M, y + 26, M + W, y + 26);
 
   y += 28;
 
- 
   doc.setFillColor(...GREEN_BG); 
   doc.rect(M, y, W, 10, 'F');
   
   doc.setTextColor(...WHITE);
   text(`Date: ${data.date}`, M + 2, y + 6);
   text(`Vehicle No: ${data.vehicle}`, M + 75, y + 6);
-  text('LR No.: ${data.lrNo}', M + 150, y + 6};
+  text(`LR No: ${data.lrNo}`, M + 150, y + 6);
 
   y += 10;
   doc.setTextColor(...BLACK);
   
 
-  
   box(M, y, W / 2, 15);
   heading('FROM:', M + 2, y + 5);
   doc.setTextColor(220,20,60);
@@ -198,7 +193,7 @@ function generatePDF(logoDataUrl) {
 
   y += 15;
 
- 
+  
   box(M, y, W / 2, 20);
   heading('CONSIGNOR:', M + 2, y + 5);
   doc.setTextColor(220,20,60);
@@ -221,8 +216,7 @@ function generatePDF(logoDataUrl) {
 
   y += 20;
 
-  
-
+ 
 
   doc.setFillColor(...GREEN_BG);
   doc.rect(M, y, W, 10, 'F');
@@ -242,7 +236,7 @@ function generatePDF(logoDataUrl) {
 
   y += 20;
 
- 
+  
   doc.setFillColor(...GREEN_BG);
   doc.rect(M, y, W, 10, 'F');
   doc.setTextColor(...WHITE); 
@@ -256,8 +250,6 @@ function generatePDF(logoDataUrl) {
   y += 10;
   
 
-
- 
 
   const charges = [
     ['Basic Freight', money(data.basic)],
@@ -273,16 +265,18 @@ function generatePDF(logoDataUrl) {
   let rowHeight = 7;
   let padding = 7;
 
-
   let boxHeight = charges.length * rowHeight + 0.5;
+
+
   
   box(M, y, W, boxHeight);
 
+  
   let cy = y + 6;
 
  charges.forEach(([label, value, isTotal], i) => {
 
-    let rowY = y + (i * rowHeight) + 5; 
+    let rowY = y + (i * rowHeight) + 5;
 
     if (isTotal) {
       doc.setDrawColor(0, 128, 0);
@@ -315,7 +309,7 @@ function generatePDF(logoDataUrl) {
 
   y += boxHeight;
 
-
+ 
   box(M, y, W, 20);
 
   text('Receiver Signature', M + 5, y + 15);
@@ -350,10 +344,9 @@ document.getElementById('invoiceForm').addEventListener('submit', function (e) {
   img.src = LOGO_PATH;
 });
 
-
 window.addEventListener('load', () => {
   calcTotal();
-
+ 
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('dated').value = today;
 });
